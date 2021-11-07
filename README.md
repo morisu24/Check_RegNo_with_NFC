@@ -7,7 +7,7 @@
 [libsub](https://libusb.info/)
 
 - [github](https://github.com/libusb/libusb/releases)からダウンロード
-- 解凍後
+- 7Zip 解凍後
   - 64ビット版Windowsの場合
     - `MS64\dll\libusb-1.0.dll` を `C:\Windows\System32` にコピー
     - `MS32\dll\libusb-1.0.dll` を `C:\Windows\SysWOW64` にコピー
