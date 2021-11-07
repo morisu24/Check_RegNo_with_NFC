@@ -20,7 +20,7 @@
 
 ## 2.Zadigのインストール
 - [Zadig](https://zadig.akeo.ie/)からインストール
-- RC-S380を刺してドライバが適用させるのを待つ
+- RC-S380を刺してドライバが適用されるのを待つ
 - Zadigを起動
 - リストボックスからRC-S380を選択（見つからない場合は`Options -> List All Devices`）
 - Driverの欄は`WinUSB`
