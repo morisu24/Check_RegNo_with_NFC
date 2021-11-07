@@ -2,8 +2,15 @@
 # -*- coding: utf8 -*-
 import sys
 import time
+import csv
+import datetime
 import threading
+import binascii
+import nfc
 import tkinter as tk
+
+# 学生証のサービスコード
+service_code = 0x010B
 
 
 class GUI(threading.Thread):
@@ -43,26 +50,54 @@ class GUI(threading.Thread):
     th = threading.Thread(target=self.check_regno, args=())
     th.start()
 
-  # StringVarを更新するように変更する
+  def on_connect_nfc(self, tag):
+    # タグのIDなどを出力する
+    # print tag
+    
+    if isinstance(tag, nfc.tag.tt3.Type3Tag):
+      try:
+          sc = nfc.tag.tt3.ServiceCode(service_code >> 6 ,service_code & 0x3f)
+          bc = nfc.tag.tt3.BlockCode(0,service=0)
+          data = tag.read_without_encryption([sc],[bc])
+          sid = data[2:12]
+          regno = sid.decode()
+          # print (sid)
+          self.sv_before.set(self.regno_list[-2])
+          self.sv_new.set(self.regno_list[-1])
+          
+      except Exception as e:
+        print ("error: %s" % e)
+    else:
+      print ("error: tag isn't Type3Tag")
+
+  # 
   def check_regno(self):
-    """ for value in range(10):
-      time.sleep(0.05)
-      # StringVarを変更するとGUIスレッドでラベル文字列が更新される
-      self.sv.set(str(value))
-      # ラベルに表示されるだろう値を表示
-      print(value) """
     self.regno_list.append("2626111222")
-    self.sv_before.set(self.regno_list[-2])
-    self.sv_new.set(self.regno_list[-1])
+    clf = nfc.ContactlessFrontend('usb')
+    while True:
+      clf.connect(rdwr={'on-connect': self.on_connect_nfc})
+      time.sleep(1)
+    
   
   def quit_gui(self):
     print("quit")
     self.root.destroy()
 
 
+def save_csv(regno_list):
+  now = datetime.datetime.now()
+  filename = '../output/log_' + now.strftime('%Y%m%d_%H%M%S') + '.csv'
+  str_regno = '\n'.join(regno_list)
+  with open(filename, 'w') as f:
+    writer = csv.writer(f, lineterminator='\n')
+    f.write(str_regno)
+    
+
 def main():
   gui = GUI()
   gui.start()
+  save_csv(gui.regno_list)
+  
 
 if __name__ == '__main__':
   main()
