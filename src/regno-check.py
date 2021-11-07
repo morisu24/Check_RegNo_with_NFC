@@ -23,7 +23,7 @@ class GUI(threading.Thread):
     self.root.title(u"Check RegNo.")
     self.root.geometry("400x150")
 
-    self.regno_list = ["2720111222","2516111222"]
+    self.regno_list = ["",""]
 
     # StringVarをフィールドに定義する
     self.sv_before = tk.StringVar()
@@ -62,6 +62,7 @@ class GUI(threading.Thread):
           sid = data[2:12]
           regno = sid.decode()
           # print (sid)
+          self.regno_list.append(regno)
           self.sv_before.set(self.regno_list[-2])
           self.sv_new.set(self.regno_list[-1])
           
@@ -72,7 +73,6 @@ class GUI(threading.Thread):
 
   # 
   def check_regno(self):
-    self.regno_list.append("2626111222")
     clf = nfc.ContactlessFrontend('usb')
     while True:
       clf.connect(rdwr={'on-connect': self.on_connect_nfc})
