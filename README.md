@@ -3,7 +3,7 @@
 
 
 ## 準備
-### 1.libusbの導入
+### 1. libusbの導入
 [libsub](https://libusb.info/)
 
 - [github](https://github.com/libusb/libusb/releases)からダウンロード
@@ -15,7 +15,7 @@
   - 32ビット版Windowsの場合
     - `MS32\dll\libusb-1.0.dll` を `C:\Windows\System32` にコピー
 
-### 2.Zadigのインストール
+### 2. Zadigのインストール
 - [Zadig](https://zadig.akeo.ie/)からインストール
 - RC-S380を刺してドライバが適用されるのを待つ
 - Zadigを起動
@@ -23,7 +23,7 @@
 - Driverの欄は`WinUSB`
 - `Replace Driver`をクリック
 
-### 3.nfcpyの導入
+### 3. nfcpyの導入
 [nfcpy](https://nfcpy.readthedocs.io/en/latest/topics/get-started.html)
 ```python
 $ pip install nfcpy
