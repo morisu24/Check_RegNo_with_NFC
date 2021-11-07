@@ -1,4 +1,4 @@
-# Check_RegNo_with_NFC
+# Check RegNo with NFC
 
 # 参考
 [Python3でnfcpy](https://qiita.com/Electro35/items/9a220c005f6b3a78131d)
