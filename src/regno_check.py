@@ -87,7 +87,8 @@ class GUI(threading.Thread):
 def save_csv(regno_list):
   now = datetime.datetime.now()
   filename = '../output/log_' + now.strftime('%Y%m%d_%H%M%S') + '.csv'
-  str_regno = '\n'.join(regno_list[2:])
+  regno_list = list(set(regno_list[2:]))  # 重複削除
+  str_regno = '\n'.join(regno_list)
   with open(filename, 'w') as f:
     writer = csv.writer(f, lineterminator='\n')
     f.write(str_regno)
