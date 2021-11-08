@@ -24,14 +24,14 @@ class GUI(threading.Thread):
     self.root.title(u"Check RegNo.")
     self.root.geometry("400x150")
 
-    self.regno_list = ["",""]
+    self.regno_list = [[0,""], [0,""]]
 
     # StringVarをフィールドに定義する
     self.sv_before = tk.StringVar()
-    self.sv_before.set(self.regno_list[-2])
+    self.sv_before.set(self.regno_list[-2][1])
 
     self.sv_new = tk.StringVar()
-    self.sv_new.set(self.regno_list[-1])
+    self.sv_new.set(self.regno_list[-1][1])
 
     # ラベルの表示 データはStringVarをバインドする
     self.label_before = tk.Label(self.root, textvariable=self.sv_before, fg="#c5c5c5", font=("Arial", "30", "bold"))
@@ -55,16 +55,18 @@ class GUI(threading.Thread):
     # nfcタグ読み取り  
     if isinstance(tag, nfc.tag.tt3.Type3Tag):
       try:
-          sc = nfc.tag.tt3.ServiceCode(service_code >> 6 ,service_code & 0x3f)
-          bc = nfc.tag.tt3.BlockCode(0,service=0)
-          data = tag.read_without_encryption([sc],[bc])
-          sid = data[2:12]
-          regno = sid.decode()
-          
-          print (regno)
-          self.regno_list.append(regno)
-          self.sv_before.set(self.regno_list[-2])
-          self.sv_new.set(self.regno_list[-1])
+        sc = nfc.tag.tt3.ServiceCode(service_code >> 6 ,service_code & 0x3f)
+        bc = nfc.tag.tt3.BlockCode(0,service=0)
+        data = tag.read_without_encryption([sc],[bc])
+        sid = data[2:12]
+        regno = sid.decode()
+        
+        print(regno)
+        if(regno not in [r[1] for r in self.regno_list[2:]]):
+          now = datetime.datetime.now()
+          self.regno_list.append([now,regno])
+          self.sv_before.set(self.regno_list[-2][1])
+          self.sv_new.set(self.regno_list[-1][1])
           
       except Exception as e:
         print ("error: %s" % e)
@@ -87,11 +89,13 @@ class GUI(threading.Thread):
 def save_csv(regno_list):
   now = datetime.datetime.now()
   filename = '../output/log_' + now.strftime('%Y%m%d_%H%M%S') + '.csv'
-  regno_list = list(set(regno_list[2:]))  # 重複削除
-  str_regno = '\n'.join(regno_list)
+  # str_regno = '\n'.join(regno_list[2:])
   with open(filename, 'w') as f:
     writer = csv.writer(f, lineterminator='\n')
-    f.write(str_regno)
+    #f.write(str_regno)
+    regno_list = sorted(regno_list[2:], key=lambda x: x[1])
+    print(regno_list)
+    writer.writerows(regno_list)
   print ("saved csv")
 
 def main():
